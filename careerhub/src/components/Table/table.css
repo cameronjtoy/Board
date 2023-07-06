@@ -1,0 +1,44 @@
+/* Style the table */
+.company-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Style the table header */
+.table-header {
+  background-color: #e03131;
+}
+
+/* Style the table header cells */
+.table-header-cell {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  border-top: 2px solid #ddd;
+  border-right: 2px solid #ddd;
+  border-left: 2px solid #ddd;
+  
+
+}
+
+/* Style the table body */
+.table-body {
+  background-color: #f1f1f1;
+}
+
+/* Style the table rows */
+.table-row:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table-row:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+/* Style the table cells */
+.table-cell {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
