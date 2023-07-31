@@ -1,5 +1,5 @@
-const Users = require('../Models/User')
-const Company = require('../Models/Company')
+const Users = require('../models/User')
+const Company = require('../models/Company')
 const bcrypt = require('bcrypt')
 const crypto = require("crypto");
 
@@ -7,7 +7,7 @@ const loginController = {
     //Register Request
     register: async (req, res) =>{
         try {
-            const {username, password, email, university} = req.body;
+            const {username, password, email} = req.body;
             const user_email = await Users.findOne({email})
             if(user_email) return res.status(400).json({msg: "The email already exists."})
             const user_username = await Users.findOne({username})
@@ -19,7 +19,7 @@ const loginController = {
             res.cookie('auth', cookie_value, {httpOnly: false, expires: expirationDate});
             
             const newUser = new Users({
-                username, email, password: passwordHash, university, cookie:cookie_value
+                username, email, password: passwordHash, cookie:cookie_value, university:"", resume: "", projects: ""
             })
             await newUser.save()
             res.json({msg : "Account Successfully Created"})

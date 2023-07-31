@@ -25,8 +25,8 @@ app.use(express.json())
 
 
 //Routes
-// app.use('/user',require('./routes/login.js'))
-app.use('/api',require('./routes/dashboard.js'))
+app.use('/',require('./routes/login.js'))
+// app.use('/api',require('./routes/dashboard.js'))
 
 
 

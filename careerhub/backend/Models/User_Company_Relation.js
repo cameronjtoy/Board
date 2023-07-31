@@ -1,12 +1,12 @@
 const  mongoose = require('mongoose');
 
 const userCompanyRelationSchema = new mongoose.Schema({
-    user_id: {
+    username: {
         type: String,
         required: true,
         trim: true
     },
-    company_id: {
+    company_name: {
         type: String,
         required: true,
         },

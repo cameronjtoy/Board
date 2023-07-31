@@ -13,11 +13,11 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    university:{
-        type:String,
-        required:true
-    },
     cookie:{
+        type:String,
+        require:true
+    },
+    university:{
         type:String,
         require:true
     },
