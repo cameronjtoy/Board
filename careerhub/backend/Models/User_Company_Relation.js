@@ -10,6 +10,18 @@ const userCompanyRelationSchema = new mongoose.Schema({
         type: String,
         required: true,
         },
+    status: {
+        type: String,
+        required: true,
+        },
+    next_deadline: {
+        type: String,
+        required: true,
+        },
+    links: {
+        type: String,
+        required: true,
+        }
     }
     ,{
     timestamps: true

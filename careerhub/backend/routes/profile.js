@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const profileController = require('../Controllers/profileController')
+const profileController = require('../Controllers/profile_controller')
 
 router.get('/profile', profileController.viewAccount)
-router.post('/profile', profileController.updateRow)
+router.post('/profile', profileController.addCompanyRow)
+
 
 
 module.exports = router
