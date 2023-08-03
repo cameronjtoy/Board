@@ -44,7 +44,7 @@ const NavBar = () => {
                     </li>
                 </ul>
             </nav>
-            <a className="logout" href="http://localhost:5000/auth/logout"><button>Logout</button></a>
+            <a className="profile" href="http://localhost:3000/logout"><button>logout</button></a>
         </header>
 
     );

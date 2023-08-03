@@ -1,24 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import './Form.css';
 
 const MyForm = () => {
   const [form, setForm] = useState({
-    name: '',
-    position: '',
-    process: '',
+    company_name: '',
+    company_position: '',
+    status: '',
+    next_deadline: '',
+    links: '',
   });
 
   const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    axios.get('http://localhost:8080/api/user')
-      .then((res) => {
-        setUser(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   const handleChange = (e) => {
     setForm({
@@ -29,19 +22,25 @@ const MyForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(form);
+    axios.post('http://localhost:8080/api/profile', form)
+      .then((res) => {
+        setUser(res.data);
+        console.log("Working", res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (
     <div>
-      <h1>Form</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Name: </label>
+          <label>Company Name: </label>
           <input 
             type="text" 
-            name="name"
-            value={form.name} 
+            name="company_name"
+            value={form.company_name} 
             onChange={handleChange} 
           />
         </div>
@@ -49,16 +48,16 @@ const MyForm = () => {
           <label>Position: </label>
           <input 
             type="text" 
-            name="position"
-            value={form.position} 
+            name="company_position"
+            value={form.company_position} 
             onChange={handleChange} 
           />
         </div>
         <div>
-          <label>Process: </label>
+          <label>Status: </label>
           <select 
-            name="process"
-            value={form.process} 
+            name="status"
+            value={form.status} 
             onChange={handleChange}
           >
             <option value="">--Please choose an option--</option>
@@ -67,6 +66,25 @@ const MyForm = () => {
             <option value="process3">Process 3</option>
           </select>
         </div>
+        <div>
+          <label>Next Deadline: </label>
+          <input 
+            type="text" 
+            name="next_deadline"
+            value={form.next_deadline} 
+            onChange={handleChange} 
+          />
+        </div>
+        <div>
+          <label>Link: </label>
+          <input 
+            type="text" 
+            name="links"
+            value={form.links} 
+            onChange={handleChange} 
+          />
+        </div>
+
         <button type="submit">Submit</button>
       </form>
     </div>

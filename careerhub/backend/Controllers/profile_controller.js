@@ -30,11 +30,12 @@ const profileController = {
     addCompanyRow: async(req, res) => {
         try{
             const { company_name, company_position, status, next_deadline, links  } = req.body;
+            console.log(req.cookies)
             const cookie_dict = req.cookies;
             const current_cookie = cookie_dict.auth
             const current_user = await User.findOne({"cookie":current_cookie})
             if(!current_user || current_cookie == ""){
-                res.redirect('localhost:3000/Login')
+                return res.redirect('localhost:3000/Login')
             }
             const current_company = await Company.findOne({"company_name":company_name})
 

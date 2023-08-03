@@ -1,70 +1,75 @@
-/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #2b4f71;
 }
 
-li, a , button{
-    font-family: 'Montserrat', sans-serif;
+li, a, button {
+    font-family:  "Montserrat", sans-serif;
     font-weight: 500;
-    font-size: 16px;
-    color: #c9cfdf;
+    font-size: 1rem;
     text-decoration: none;
 }
 
-
-header{
+header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 30px 10%;
-} 
-
-img {
-    cursor: pointer;
-    width: 100px;
-    height: 50px;
-
+    justify-content: space-between; /* Add this property */
+    padding: 0 1rem; 
+    height: 60px;
+    background-color: #9c8d8d;
+    font-family:  "Montserrat", sans-serif;
 }
 
-.navbar-nav{
+.logo {
+    height: 40px;
+    width: 40px;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
     list-style: none;
-    border: none;
+}
+
+.nav-item {
+    margin: 0 1rem;
+}
+
+.nav-item a {
+    text-decoration: none;
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+
+.nav-item a.active-link {
+    color: #8e8e8e;
+}
+.nav-item a:hover {
+    background-color: #0b0808;;
     border-radius: 50px;
-}
-
-.navbar-nav .nav-item{
-    display: inline-block;
-    padding: 0px 20px;
-    border: none;
-    border-radius: 50px;
-}
-
-.nav-item a{
-    transition: all 0.3s ease 0s;
-    
-}
-
-.nav-item a:hover{
-    color: #a5d4de;
-}
-
-
-button {
     padding: 9px 25px;
-    background-color: #a5d4de;
-    color: #1d242c;
-    border: none;
-    border-radius: 50px;
+}
+
+.profile button {
+    border: none; 
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
     cursor: pointer;
-    transition: all 0.3s ease 0s;
+    border-radius: 12px;
+    background-color: white; 
+    color: black; 
+    border: 2px solid #e60023;
 }
 
-button:hover{
-    background-color: #f3f4f9;
-    color: #1d242c;
+.profile button:hover {
+    background-color: #e60023;
+    color: white;
 }
-

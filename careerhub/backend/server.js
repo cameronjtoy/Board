@@ -6,22 +6,18 @@ const cors = require('cors')
 const app = express();
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const companyy = require('./test.js')
 
 
 app.use(express.json())
-// app.use(bodyParser.json())
-// app.use(express.urlencoded({ extended: true }));
-// app.use(bodyParser.urlencoded({
-//     extended: true
-// }));
-// app.use(cookieParser())
-// app.use(cors({
-//     origin: 'http://localhost:8080',
-//     methods: ['GET', 'POST'],
-//     credentials: true
-//   }));
-// app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json())
+app.use(cookieParser())
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    withCredentials: true,
+    credentials: true
+  }));
+app.use(express.static(__dirname + '/public'));
 
 
 //Routes
