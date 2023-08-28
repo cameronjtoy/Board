@@ -8,14 +8,16 @@ const NavBar = () => {
     const [navBarHidden, setNavBarHidden] = useState(true);
 
     const handleScroll = () => {
-        const { pageYOffset } = window;
-        if (pageYOffset > lastScrollTop.current) {
-        setNavBarHidden(false);
+        const scrollY = window.scrollY;
+        if (scrollY > lastScrollTop.current) {
+            setNavBarHidden(true); // navbar should be hidden when scrolling down
         } else {
-        setNavBarHidden(true);
+            setNavBarHidden(false); // navbar should be visible when scrolling up
         }
-        lastScrollTop.current = pageYOffset;
+        lastScrollTop.current = scrollY;
     };
+    
+    
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -33,18 +35,49 @@ const NavBar = () => {
                     </NavLink>
                     </li>
                     <li className="nav-item">
-                    <NavLink to="/about" activeClassName="active-link">
-                        About
+                    <NavLink to="/profile" activeClassName="active-link">
+                        Profile
+                    </NavLink>
+                    </li>
+                    <li className="nav-item">
+                    <NavLink to="/form" activeClassName="active-link">
+                        Form
                     </NavLink>
                     </li>
                     <li className="nav-item">
                     <NavLink to="/contact" activeClassName="active-link">
-                        Contact
+                        Job Posting
+                    </NavLink>
+                    </li>
+                    <li className="nav-item">
+                    <NavLink to="/contact" activeClassName="active-link">
+                        Networking
                     </NavLink>
                     </li>
                 </ul>
             </nav>
-            <a className="profile" href="http://localhost:3000/logout"><button>logout</button></a>
+            <div className="dropdown">
+                <div className="content">
+                    <span className="material-symbols-outlined">settings</span>
+                    <p>Settings</p>
+                    <span className="material-symbols-outlined">expand_more</span>
+            </div>
+            <button type="button"></button>
+            <div className="menu">
+                <a href="http://localhost:3000/profile">
+                <span className="material-symbols-outlined">Profile</span>
+                <p>Profile</p>
+                </a>
+                <a href="http://localhost:3000/settings">
+                <span className="material-symbols-outlined">Settings</span>
+                <p>Settings</p>
+                </a>
+                <a href="http://localhost:3000/logout">
+                <span className="material-symbols-outlined">Logout</span>
+                <p>Logout</p>
+                </a>
+            </div>
+            </div>
         </header>
 
     );

@@ -45,6 +45,7 @@ const loginController = {
             const update = { cookie: cookie_value };
             const updatedUser = await Users.findOneAndUpdate(filter, update);
             await updatedUser.save();
+
         
             res.cookie('auth', cookie_value, {httpOnly: false, expires: expirationDate})
             res.json({msg: "You are now logged in"})
@@ -57,7 +58,7 @@ const loginController = {
             const cookie_dict = req.cookies;
             const current_cookie = cookie_dict.auth
             if(!current_cookie){
-                res.redirect('localhost:3000/Login')
+                res.redirect('http://localhost:3000/login')
                 return res.json({msg:"You are not Logged In"})
             }
             const filter = { username : user.username };
@@ -75,7 +76,7 @@ const loginController = {
 
             const user = await Users.findOne({"cookie":current_cookie})
             if(!user || current_cookie == ""){
-                res.redirect('localhost:3000/Login')
+                res.redirect('http://localhost:3000/login')
             }
             else{
                 return res.json(user)

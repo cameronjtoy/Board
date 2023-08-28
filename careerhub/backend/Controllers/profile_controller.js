@@ -4,59 +4,59 @@ const CompanyUser = require('../models/User_Company_Relation')
 
 const profileController = {
     viewAccount: async(req, res) => {
-        try{
+        try {
             const cookie_dict = req.cookies;
-            const current_cookie = cookie_dict.auth
-            const current_user = await User.findOne({"cookie":current_cookie})
-            if(!current_user || current_cookie == ""){
-                res.redirect('localhost:3000/Login')
+            const current_cookie = cookie_dict.auth;
+            const current_user = await User.findOne({ "cookie": current_cookie });
+
+            if (!current_user || current_cookie === "") {
+                return res.redirect('localhost:3000/login'); // Make sure to return here
             }
 
             // Fetching all companies added by current user
-            const userCompanies = await User.find({ username: current_user.username }).populate('company_name')
-
-            // Extract companies from the populated user-company relations
-            const companiesForUser = userCompanies.map(relation => relation.company_name);
+            const userCompanies = await CompanyUser.find({ username: current_user.username });
             
             // Send the user's companies
-            res.json({
-                userCompanies: companiesForUser
+            return res.json({ // Return here as well to ensure no further code is executed
+                userCompanies
             });
-        }catch(err){
-            return res.status(500).json({msg: err.message})
+        } catch (err) {ç
+            return res.status(500).json({ msg: err.message }); // Return here to ensure no further code is executed
         }
-
     },
+
     addCompanyRow: async(req, res) => {
         try{
             const { company_name, company_position, status, next_deadline, links  } = req.body;
-            console.log(req.cookies)
             const cookie_dict = req.cookies;
             const current_cookie = cookie_dict.auth
             const current_user = await User.findOne({"cookie":current_cookie})
-            if(!current_user || current_cookie == ""){
-                return res.redirect('localhost:3000/Login')
-            }
-            const current_company = await Company.findOne({"company_name":company_name})
+            // if(!current_user || current_cookie == ""){
+            //     return res.redirect('localhost:3000/login')
+            // }
+            // const current_company = await Company.findOne({"company_name":company_name})
 
-            if(!current_company){
-                const newCompany = new Company({
-                    company_name: company_name, company_sector : "", company_location : "", company_website : "", company_description : "", company_logo : ""
-                })
-            }
+            // if(!current_company){
+            //     const newCompany = new Company({
+            //         company_name: company_name, company_sector : "", company_location : "", company_website : "", company_description : "", company_logo : ""
+            //     })
+            //     await newCompany.save()
+            // }
+
             const current_company_user = await CompanyUser.findOne({"company_name":company_name, "username":current_user.username})
+
             if(current_company_user){
                 current_status = current_company_user.status
                 current_deadline = current_company_user.next_deadline
                 if(current_status != status){
-                    current_company.findOneAndUpdate({"company_name":company_name, "username":current_user.username}, {"status":status}, {new: true}, (err, doc) => {
+                    current_company_user.findOneAndUpdate({"company_name":company_name, "username":current_user.username}, {"status":status}, {new: true}, (err, doc) => {
                         if (err) {
                             console.log("Something wrong when updating data!");
                         }
                     });
                 }
                 else if(current_deadline != next_deadline){
-                    current_company.findOneAndUpdate({"company_name":company_name, "username":current_user.username}, {"next_deadline":next_deadline}, {new: true}, (err, doc) => {
+                    current_company_user.findOneAndUpdate({"company_name":company_name, "username":current_user.username}, {"next_deadline":next_deadline}, {new: true}, (err, doc) => {
                         if (err) {
                             console.log("Something wrong when updating data!");
                         }
@@ -77,9 +77,24 @@ const profileController = {
         }catch(err){
             return res.status(500).json({msg: err.message})
         }
-    }
+    },
+    editCompanyRow : async(req, res) => {
+        try{
+            const { key, value } = req.body;
+            current_company_user.findOneAndUpdate({"company_name":company_name, "username":current_user.username}, {key:value}, {new: true}, (err, doc) => {
+                if (err) {
+                    console.log("Something wrong when updating data!");
+                }
+            });
+            res.json({
+                msg: "Company edited successfully"
+            });
+        }
+        catch(err){
+            return res.status(500).json({msg: err.message})
+        }
+    },
 }
-
 
 module.exports = profileController
 

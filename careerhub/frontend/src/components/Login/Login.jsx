@@ -2,8 +2,9 @@ import React, {useState} from 'react'
 import {Link} from 'react-router-dom'
 import './login.css'
 import axios from 'axios'
+import NavBar from '../NavBar/NavBar'
 
-function Login() {
+const Login = () => {
 
     const axiosInstance = axios.create({
         withCredentials: true
@@ -17,16 +18,20 @@ function Login() {
         setUser({...user, [name]:value})
     }
 
-    const submitHandler = async e =>{
-        e.preventDefault()
+    const submitHandler = async e => {
+        e.preventDefault();
         try {
-            await axiosInstance.post('http://localhost:8080/Login', {...user})
-            //localStorage.setItem('firstLogin', true)
+            const response = await axios.post('http://localhost:8080/login', { ...user });
+            // You can now use response.data to get the user data from the response
+            setUser(response.data); // assuming setUser is defined in your component
+        
+            // localStorage.setItem('firstLogin', true);
             window.location.href = "/";
-        } catch (err) {
-            alert(err.response.data.msg)
-        }
-    }
+            } catch (err) {
+            alert(err.response.data.msg);
+            }
+        };
+        
 
 
     return (
