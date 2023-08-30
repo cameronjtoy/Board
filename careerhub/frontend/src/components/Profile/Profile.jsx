@@ -83,7 +83,6 @@ const Profile = () => {
             },
         });
 
-    console.log(table.getRowModel());
 
     return (
         <table>

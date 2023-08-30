@@ -13,8 +13,8 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(cors({
     origin: 'http://localhost:3000',
+    optionsSuccessStatus: 204,
     methods: ['GET', 'POST'],
-    withCredentials: true,
     credentials: true
   }));
 app.use(express.static(__dirname + '/public'));

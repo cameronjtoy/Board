@@ -1,18 +1,12 @@
 const User = require('../models/User')
 const Company = require('../models/Company')
 const CompanyUser = require('../models/User_Company_Relation')
+const authMiddleWare = require('../middleware/authMiddleWare')
 
 const profileController = {
     viewAccount: async(req, res) => {
         try {
-            const cookie_dict = req.cookies;
-            const current_cookie = cookie_dict.auth;
-            const current_user = await User.findOne({ "cookie": current_cookie });
-
-            if (!current_user || current_cookie === "") {
-                return res.redirect('localhost:3000/login'); // Make sure to return here
-            }
-
+            const username = await authMiddleWare.createJWT(req, res);
             // Fetching all companies added by current user
             const userCompanies = await CompanyUser.find({ username: current_user.username });
             
@@ -20,7 +14,7 @@ const profileController = {
             return res.json({ // Return here as well to ensure no further code is executed
                 userCompanies
             });
-        } catch (err) {ç
+        } catch (err) {
             return res.status(500).json({ msg: err.message }); // Return here to ensure no further code is executed
         }
     },

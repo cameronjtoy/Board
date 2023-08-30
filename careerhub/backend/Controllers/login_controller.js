@@ -2,6 +2,7 @@ const Users = require('../models/User')
 const Company = require('../models/Company')
 const bcrypt = require('bcrypt')
 const crypto = require("crypto");
+const { tokenGenerator } = require('../utils/SecretToken')
 
 const loginController = {
     //Register Request
@@ -14,12 +15,10 @@ const loginController = {
             if(user_username) return res.status(400).json({msg: "This username already exists."})
             if(password.length < 6) return res.status(400).json({msg: "Password is at least 6 characters long."})
             const passwordHash = await bcrypt.hash(password, 10)
-            const cookie_value = crypto.randomBytes(20).toString('hex');
-            const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-            res.cookie('auth', cookie_value, {httpOnly: false, expires: expirationDate});
-            
+            const token = tokenGenerator(username);
+            res.cookie('auth', token, {httpOnly: false, withCredentials: true})
             const newUser = new Users({
-                username, email, password: passwordHash, cookie:cookie_value, university:"", resume: "", projects: ""
+                username, email, password: passwordHash, university:"", resume: "", projects: ""
             })
             await newUser.save()
             res.json({msg : "Account Successfully Created"})
@@ -39,15 +38,8 @@ const loginController = {
             }
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) return res.status(400).json({ msg: "Incorrect password." });
-            const cookie_value = crypto.randomBytes(20).toString("hex");
-            const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-            const filter = { username: username };
-            const update = { cookie: cookie_value };
-            const updatedUser = await Users.findOneAndUpdate(filter, update);
-            await updatedUser.save();
-
-        
-            res.cookie('auth', cookie_value, {httpOnly: false, expires: expirationDate})
+            const token = tokenGenerator(username);
+            res.cookie('auth', token, {httpOnly: false, withCredentials: true})
             res.json({msg: "You are now logged in"})
             } catch (err) {
             return res.status(500).json({msg: err.message});
