@@ -6,11 +6,13 @@ const authMiddleWare = require('../middleware/authMiddleWare')
 const profileController = {
     viewAccount: async(req, res) => {
         try {
-            const username = await authMiddleWare.createJWT(req, res);
+            const current_username = req.user;
+            const user_info = await User.findOne({ username: current_username.username });
+
             // Fetching all companies added by current user
-            const userCompanies = await CompanyUser.find({ username: current_user.username });
-            
+            const userCompanies = await CompanyUser.find({ username: current_username.username });
             // Send the user's companies
+
             return res.json({ // Return here as well to ensure no further code is executed
                 userCompanies
             });
@@ -22,9 +24,8 @@ const profileController = {
     addCompanyRow: async(req, res) => {
         try{
             const { company_name, company_position, status, next_deadline, links  } = req.body;
-            const cookie_dict = req.cookies;
-            const current_cookie = cookie_dict.auth
-            const current_user = await User.findOne({"cookie":current_cookie})
+            const current_username = req.user;
+
             // if(!current_user || current_cookie == ""){
             //     return res.redirect('localhost:3000/login')
             // }
@@ -37,20 +38,20 @@ const profileController = {
             //     await newCompany.save()
             // }
 
-            const current_company_user = await CompanyUser.findOne({"company_name":company_name, "username":current_user.username})
+            const current_company_user = await CompanyUser.findOne({"company_name":company_name, "username":current_username.username})
 
             if(current_company_user){
                 current_status = current_company_user.status
                 current_deadline = current_company_user.next_deadline
                 if(current_status != status){
-                    current_company_user.findOneAndUpdate({"company_name":company_name, "username":current_user.username}, {"status":status}, {new: true}, (err, doc) => {
+                    current_company_user.findOneAndUpdate({"company_name":company_name, "username":current_username.username}, {"status":status}, {new: true}, (err, doc) => {
                         if (err) {
                             console.log("Something wrong when updating data!");
                         }
                     });
                 }
                 else if(current_deadline != next_deadline){
-                    current_company_user.findOneAndUpdate({"company_name":company_name, "username":current_user.username}, {"next_deadline":next_deadline}, {new: true}, (err, doc) => {
+                    current_company_user.findOneAndUpdate({"company_name":company_name, "username":current_username.username}, {"next_deadline":next_deadline}, {new: true}, (err, doc) => {
                         if (err) {
                             console.log("Something wrong when updating data!");
                         }
@@ -59,8 +60,9 @@ const profileController = {
                 await current_company_user.save()
             }
             else{
+                console.log("here")
                 const newCompanyUser = new CompanyUser({
-                    company_name: company_name, username: current_user.username, company_position: company_position, status: status, next_deadline: next_deadline, links: links
+                    company_name: company_name, username: current_username.username, company_position: company_position, status: status, next_deadline: next_deadline, links: links
                 })
                 await newCompanyUser.save()
             }

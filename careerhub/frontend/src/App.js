@@ -6,7 +6,6 @@ import NavBar from './components/NavBar/NavBar';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import Form from './components/Form/Form';
-import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
 import axios from 'axios';
 import './App.css';

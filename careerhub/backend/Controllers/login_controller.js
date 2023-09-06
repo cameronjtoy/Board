@@ -2,7 +2,7 @@ const Users = require('../models/User')
 const Company = require('../models/Company')
 const bcrypt = require('bcrypt')
 const crypto = require("crypto");
-const { tokenGenerator } = require('../utils/SecretToken')
+const { createJWT } = require('../utils/SecretToken')
 
 const loginController = {
     //Register Request
@@ -15,7 +15,7 @@ const loginController = {
             if(user_username) return res.status(400).json({msg: "This username already exists."})
             if(password.length < 6) return res.status(400).json({msg: "Password is at least 6 characters long."})
             const passwordHash = await bcrypt.hash(password, 10)
-            const token = tokenGenerator(username);
+            const token = createJWT(username);
             res.cookie('auth', token, {httpOnly: false, withCredentials: true})
             const newUser = new Users({
                 username, email, password: passwordHash, university:"", resume: "", projects: ""
@@ -38,7 +38,7 @@ const loginController = {
             }
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) return res.status(400).json({ msg: "Incorrect password." });
-            const token = tokenGenerator(username);
+            const token = createJWT(username);
             res.cookie('auth', token, {httpOnly: false, withCredentials: true})
             res.json({msg: "You are now logged in"})
             } catch (err) {
