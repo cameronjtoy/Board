@@ -60,7 +60,6 @@ const profileController = {
                 await current_company_user.save()
             }
             else{
-                console.log("here")
                 const newCompanyUser = new CompanyUser({
                     company_name: company_name, username: current_username.username, company_position: company_position, status: status, next_deadline: next_deadline, links: links
                 })
@@ -74,22 +73,41 @@ const profileController = {
             return res.status(500).json({msg: err.message})
         }
     },
-    editCompanyRow : async(req, res) => {
-        try{
-            const { key, value } = req.body;
-            current_company_user.findOneAndUpdate({"company_name":company_name, "username":current_user.username}, {key:value}, {new: true}, (err, doc) => {
-                if (err) {
-                    console.log("Something wrong when updating data!");
-                }
+    updateCompanyRow : async(req, res) => {
+        try {
+            const payload = req.body;
+            const current_username = req.user;
+            const columnID = payload.columnId;
+        
+            const filter = {
+                "company_name": payload.companyName,
+                "username": current_username.username
+            };
+        
+            const update = {
+                [columnID]: payload.updatedValue
+            };
+        
+            const current_company = await CompanyUser.findOneAndUpdate(filter, update, {
+                new: true
             });
+        
+            if (!current_company) {
+                throw new Error('Failed to update company information.');
+            }
+        
+            // If you need to save the changes (though it's typically not needed with findOneAndUpdate)
+            // await current_company.save();
+        
             res.json({
-                msg: "Company edited successfully"
+                msg: "Company updated successfully"
             });
+        
+        } catch (err) {
+            res.status(500).send("Internal server error");
         }
-        catch(err){
-            return res.status(500).json({msg: err.message})
-        }
-    },
+        
+    }
 }
 
 module.exports = profileController
