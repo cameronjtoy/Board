@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Profile.css";
 import Cell from "../Buttons/Cell";
-import {
-    createColumnHelper,
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-} from "@tanstack/react-table";
+import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { useSelector, useDispatch } from 'react-redux';
+import { setData, setEditedRows, updateData } from '../Redux/Table/tableSlice';
+import { TableCellContext } from "../Buttons/Cell";
 
 
 const columnHelper = createColumnHelper();
+
 
 const columns = [
     columnHelper.accessor("company_name", {
@@ -22,7 +21,7 @@ const columns = [
 
     }),
     columnHelper.accessor("status", {
-        header: "Status",
+        header: "Stage",
         cell: Cell,
         meta : {
             type: "select",
@@ -51,14 +50,29 @@ const columns = [
 ];
 
 const Profile = () => {
-    const [data, setData] = useState([]);
-    const [editedRows, setEditedRows] = useState({});
-    
+    const dispatch = useDispatch();
+    const data = useSelector(state => state.table.data);
+    const editedRows = useSelector(state => state.table.editedRows);
+    const [cellBeingEdited, setCellBeingEdited] = useState(null); // default to no cell being edited
+
+    const startEditing = (rowIndex, columnId) => {
+        setCellBeingEdited({ rowIndex, columnId });
+    };
+
+    const stopEditing = () => {
+        setCellBeingEdited(null);
+    };
+
+    const isCellEditable = (rowIndex, columnId) => {
+        // Allow editing if no cell is being edited OR if the cell being edited is the current cell.
+        return !cellBeingEdited || (cellBeingEdited.rowIndex === rowIndex && cellBeingEdited.columnId === columnId);
+    };
+
     useEffect(() => {
         axios.get("http://localhost:8080/api/profile", {withCredentials:true}).then((res) => {
-            setData(res.data.userCompanies);
+            dispatch(setData(res.data.userCompanies));
         });
-    }, []);
+    }, [dispatch]);
 
     const table = useReactTable({
         data,
@@ -66,25 +80,20 @@ const Profile = () => {
         getCoreRowModel: getCoreRowModel(),
         meta: {
             editedRows,
-            setEditedRows,
+            setEditedRows: (rows) => dispatch(setEditedRows(rows)),
             updateData: (rowIndex, columnId, value) => {
-                setData((old) =>
-                old.map((row, index) => {
-                    if (index === rowIndex) {
-                    return {
-                        ...old[rowIndex],
-                        [columnId]: value,
-                    };
-                    }
-                    return row;
-                })
-                );
+                dispatch(updateData({ rowIndex, columnId, value }));
             },
-            },
-        });
+        }
+    });
 
 
     return (
+        <TableCellContext.Provider value={{
+            isCellEditable,
+            startEditing,
+            stopEditing
+        }}>
         <table>
             <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -114,6 +123,7 @@ const Profile = () => {
             ))}
             </tbody>
         </table>
+        </TableCellContext.Provider>
     );
 }
 
