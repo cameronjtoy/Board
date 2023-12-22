@@ -45,13 +45,8 @@ const NavBar = () => {
                     </NavLink>
                     </li>
                     <li className="nav-item">
-                    <NavLink to="/contact" activeClassName="active-link">
-                        Job Posting
-                    </NavLink>
-                    </li>
-                    <li className="nav-item">
-                    <NavLink to="/contact" activeClassName="active-link">
-                        Networking
+                    <NavLink to="/dashboard" activeClassName="active-link">
+                        Dashboard
                     </NavLink>
                     </li>
                 </ul>

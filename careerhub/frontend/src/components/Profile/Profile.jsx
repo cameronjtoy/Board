@@ -5,126 +5,165 @@ import Cell from "../Buttons/Cell";
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useSelector, useDispatch } from 'react-redux';
 import { setData, setEditedRows, updateData } from '../Redux/Table/tableSlice';
-import { TableCellContext } from "../Buttons/Cell";
+import TableCellContext from "../Redux/Table/tableContext"
+
 
 
 const columnHelper = createColumnHelper();
 
 
 const columns = [
-    columnHelper.accessor("company_name", {
-        header: "Company Name",
-        cell: Cell,
-        meta: {
-            type: "text",
-        },
+  columnHelper.accessor("company_name", {
+    header: "Company Name",
+    cell: Cell,
+    meta: {
+      type: "text",
+    },
 
-    }),
-    columnHelper.accessor("status", {
-        header: "Stage",
-        cell: Cell,
-        meta : {
-            type: "select",
-            options: [
-                { label: "Applied", value: "Applied" },
-                { label: "Interviewing", value: "Interviewing" },
-                { label: "Offer", value: "Offer" },
-                { label: "Rejected", value: "Rejected" },
-            ],
-        },
-    }),
-    columnHelper.accessor("next_deadline", {
-        header: "Next Deadline",
-        cell: Cell,
-        meta: {
-            type: "date",
-        },
-    }),
-    columnHelper.accessor("links", {
-        header: "Links",
-        cell: Cell,
-        meta: {
-            type: "text",
-        },
-    }),
+  }),
+  columnHelper.accessor("status", {
+    header: "Stage",
+    cell: Cell,
+    meta: {
+      type: "select",
+      options: [
+        { label: "Applied", value: "Applied" },
+        { label: "Interviewing", value: "Interviewing" },
+        { label: "Offer", value: "Offer" },
+        { label: "Rejected", value: "Rejected" },
+      ],
+    },
+  }),
+  columnHelper.accessor("next_deadline", {
+    header: "Next Deadline",
+    cell: Cell,
+    meta: {
+      type: "date",
+    },
+  }),
+  columnHelper.accessor("links", {
+    header: "Links",
+    cell: Cell,
+    meta: {
+      type: "text",
+    },
+  }),
 ];
 
 const Profile = () => {
-    const dispatch = useDispatch();
-    const data = useSelector(state => state.table.data);
-    const editedRows = useSelector(state => state.table.editedRows);
-    const [cellBeingEdited, setCellBeingEdited] = useState(null); // default to no cell being edited
+  const dispatch = useDispatch();
+  const data = useSelector(state => state.table.data);
+  const editedRows = useSelector(state => state.table.editedRows);
+  const [cellBeingEdited, setCellBeingEdited] = useState(null); // default to no cell being edited
 
-    const startEditing = (rowIndex, columnId) => {
-        setCellBeingEdited({ rowIndex, columnId });
-    };
+  const startEditing = (rowIndex, columnId) => {
+    setCellBeingEdited({ rowIndex, columnId });
+  };
 
-    const stopEditing = () => {
-        setCellBeingEdited(null);
-    };
+  const stopEditing = () => {
+    setCellBeingEdited(null);
+  };
 
-    const isCellEditable = (rowIndex, columnId) => {
-        // Allow editing if no cell is being edited OR if the cell being edited is the current cell.
-        return !cellBeingEdited || (cellBeingEdited.rowIndex === rowIndex && cellBeingEdited.columnId === columnId);
-    };
+  const isCellEditable = (rowIndex, columnId) => {
+    // Allow editing if no cell is being edited OR if the cell being edited is the current cell.
+    return !cellBeingEdited || (cellBeingEdited.rowIndex === rowIndex && cellBeingEdited.columnId === columnId);
+  };
 
-    useEffect(() => {
-        axios.get("http://localhost:8080/api/profile", {withCredentials:true}).then((res) => {
-            dispatch(setData(res.data.userCompanies));
-        });
-    }, [dispatch]);
-
-    const table = useReactTable({
-        data,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-        meta: {
-            editedRows,
-            setEditedRows: (rows) => dispatch(setEditedRows(rows)),
-            updateData: (rowIndex, columnId, value) => {
-                dispatch(updateData({ rowIndex, columnId, value }));
-            },
-        }
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/profile", { withCredentials: true }).then((res) => {
+      dispatch(setData(res.data.userCompanies));
     });
+  }, [dispatch]);
+
+  const [newRow , setNewRow] = useState({
+    company_name: "",
+    status: "",
+    next_deadline: "",
+    links: "",
+  });
+
+  const handleNewRowChange = (columnId, value) => {
+    setNewRow({ ...newRow, [columnId]: value });
+  };
+
+  const addNewRow = () => {
+    // Here you can handle the submission of the new row
+    // For example, send it to your backend or add it to your Redux state
+    console.log("New row data:", newRow);
+    // Reset the new row state after submission
+    setNewRow({
+      company_name: "",
+      status: "",
+      next_deadline: "",
+      links: "",
+    });
+  };
 
 
-    return (
-        <TableCellContext.Provider value={{
-            isCellEditable,
-            startEditing,
-            stopEditing
-        }}>
-        <table>
-            <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                    <th key={header.id}>
-                    {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                        )}
-                    </th>
-                ))}
-                </tr>
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    meta: {
+      editedRows,
+      setEditedRows: (rows) => dispatch(setEditedRows(rows)),
+      updateData: (rowIndex, columnId, value) => {
+        dispatch(updateData({ rowIndex, columnId, value }));
+      },
+    }
+  });
+
+
+  return (
+    <TableCellContext.Provider value={{
+      isCellEditable,
+      startEditing,
+      stopEditing
+    }}>
+      <table>
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+          <tr>
+            {columns.map((column) => (
+              <td key={column.id}>
+                {/* Modify this input rendering as per your requirement */}
+                <input
+                  type="text"
+                  value={newRow[column.id]}
+                  onChange={(e) => handleNewRowChange(column.id, e.target.value)}
+                  placeholder={`Enter ${column.id}`}
+                />
+              </td>
             ))}
-            </thead>
-            <tbody>
-            {table.getRowModel().rows.map((row) => (
-                <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                ))}
-                </tr>
-            ))}
-            </tbody>
-        </table>
-        </TableCellContext.Provider>
-    );
+          </tr>
+        </tbody>
+      </table>
+    </TableCellContext.Provider>
+  );
 }
 
 export default Profile;

@@ -69,7 +69,7 @@ const MyForm = () => {
         <div>
           <label>Next Deadline: </label>
           <input 
-            type="text" 
+            type="date" 
             name="next_deadline"
             value={form.next_deadline} 
             onChange={handleChange} 
