@@ -36,7 +36,7 @@ header {
 }
 
 .nav-item {
-    margin: 0 1rem;
+    margin: 0 2rem;
 }
 
 .nav-item a {
@@ -48,11 +48,15 @@ header {
 .nav-item a.active-link {
     color: #8e8e8e;
 }
+
 .nav-item a:hover {
-    background-color: #0b0808;;
+    background-color: #0b0808;
     border-radius: 50px;
-    padding: 9px 25px;
+    padding: 2px 25px;
+    color: #ffffff; /* Ensure the text color contrasts well with the background */
+    font-weight: bold; /* Optionally make the font bolder on hover */
 }
+
 
 
 .dropdown {

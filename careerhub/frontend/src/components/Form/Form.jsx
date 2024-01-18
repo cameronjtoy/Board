@@ -26,6 +26,7 @@ const MyForm = () => {
       .then((res) => {
         setUser(res.data);
         console.log("Working", res.data);
+        props.addRowToTable(form); // assuming form contains the new row data
       })
       .catch((err) => {
         console.log(err);

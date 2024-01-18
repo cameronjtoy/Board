@@ -57,7 +57,7 @@ const NavBar = () => {
                     <p>Settings</p>
                     <span className="material-symbols-outlined">expand_more</span>
             </div>
-            <button type="button"></button>
+            {/* <button type="button"></button>
             <div className="menu">
                 <a href="http://localhost:3000/profile">
                 <span className="material-symbols-outlined">Profile</span>
@@ -71,7 +71,7 @@ const NavBar = () => {
                 <span className="material-symbols-outlined">Logout</span>
                 <p>Logout</p>
                 </a>
-            </div>
+            </div> */}
             </div>
         </header>
 

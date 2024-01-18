@@ -16,9 +16,12 @@ const tableSlice = createSlice({
         updateData: (state, action) => {
             const { rowIndex, columnId, value } = action.payload;
             state.data[rowIndex][columnId] = value;
+        },
+        addRow: (state, action) => {
+            state.data.push(action.payload);
         }
     }
 });
 
-export const { setData, setEditedRows, updateData } = tableSlice.actions;
+export const { setData, setEditedRows, updateData , addRow} = tableSlice.actions;
 export default tableSlice.reducer;

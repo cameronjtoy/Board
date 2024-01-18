@@ -23,6 +23,7 @@ app.use(express.static(__dirname + '/public'));
 //Routes
 app.use('/',require('./routes/login.js'))
 app.use('/api',require('./routes/profile.js'))
+app.use('/api',require('./routes/dashboard.js'))
 
 
 
